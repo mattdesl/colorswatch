@@ -1,0 +1,308 @@
+<html>
+  <head>
+    <title>colorswatch</title>
+    <meta
+      name="viewport"
+      content="width=device-width, shrink-to-fit=0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
+    <style>
+      html {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
+
+      body {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
+        margin: 0;
+        font: 12px monospace;
+      }
+
+      .grid {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
+      }
+      .row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
+      .cell {
+        width: 20vmin;
+        height: 20vmin;
+        position: relative;
+      }
+      .cell {
+      }
+      .cell.active {
+      }
+      /*
+      .popup {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        position: absolute;
+        top: 100px;
+        left: 100px;
+        width: 200px;
+        border: 1px solid gray;
+        border-radius: 5px 5px;
+        background: white;
+        margin: 0;
+        padding: 0;
+        padding-right: 10px;
+      }
+      .popup input {
+        width: 100%;
+        height: 100%;
+        padding: 10px;
+        margin: 0;
+        text-overflow: ellipsis;
+        font: 12px monospace;
+        appearance: none;
+        border: 0;
+        background: none;
+      } */
+
+      .cell.active::after {
+        pointer-events: none;
+        position: absolute;
+        border: 8px solid white;
+        /* border-radius: 0px; */
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        box-sizing: border-box;
+        /* mix-blend-mode: difference; */
+        content: " ";
+        animation: blink 500ms linear forwards;
+      }
+
+      @keyframes blink {
+        0% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+
+      :root {
+        --main-width: max(400px, 60vmin);
+      }
+
+      .axis-container {
+      }
+      .axis-container,
+      .space {
+        margin-top: 10px;
+      }
+      .space label,
+      .space input {
+        vertical-align: middle;
+      }
+      #duo-checkbox {
+        margin: 0px;
+      }
+      input[type="checkbox"] {
+        margin: 0px;
+      }
+      .space label {
+        display: block;
+        padding: 5px 7.5px;
+      }
+      .check {
+        cursor: pointer;
+        user-select: none;
+        background: hsl(0, 0%, 0%, 0.1);
+        margin-left: 10px;
+        border-radius: 4px;
+      }
+      .axis,
+      .space .wrap {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .axis .label {
+        font-style: italic;
+        padding-right: 10px;
+      }
+      .axis .caption {
+        display: inline-block;
+        padding-left: 10px;
+      }
+
+      .cell.active .ruler {
+        animation: blink 500ms linear forwards;
+      }
+      .ruler {
+        pointer-events: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        margin: auto;
+        box-sizing: border-box;
+        /* height: 2px; */
+        z-index: -10;
+        /* background: gray; */
+        /* mix-blend-mode: difference; */
+        /* color: white; */
+        opacity: 0;
+        content: " ";
+      }
+      .ruler.horiz {
+        width: 400vw;
+        border-bottom: 1px dashed currentColor;
+        height: 2px;
+        left: -200vw;
+      }
+      .ruler.vert {
+        width: 2px;
+        border-left: 1px dashed currentColor;
+        height: 400vw;
+        top: -200vw;
+      }
+
+      input[type="range"] {
+        flex-grow: 1;
+      }
+
+      .space {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: row;
+      }
+
+      .xl,
+      .l,
+      .m,
+      .s {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .l {
+        width: var(--main-width);
+        height: var(--main-width);
+      }
+      .s {
+        width: calc(var(--main-width) / 2);
+        height: calc(var(--main-width) / 2);
+      }
+
+      .cell-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .tools {
+        margin-top: 10px;
+      }
+
+      .home {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <a
+      href="https://github.com/mattdesl/colorswatch"
+      target="_blank"
+      class="home"
+      >readme</a
+    >
+    <main>
+      <div class="cell-container">
+        <div class="cell l">
+          <div class="cell s" style="display: none"></div>
+        </div>
+      </div>
+
+      <div class="space">
+        <div class="wrap">
+          <select class="space-select"></select>
+          <div class="check">
+            <label><input type="checkbox" id="duo-checkbox" /> duo</label>
+          </div>
+        </div>
+        <div class="space-value"></div>
+      </div>
+
+      <div class="axis-container">
+        <div class="axis x">
+          <div class="label">l</div>
+          <input
+            class="picker-slider"
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+          />
+          <!-- <div class="caption">100%</div> -->
+        </div>
+        <div class="axis y">
+          <div class="label">c</div>
+          <input
+            class="picker-slider"
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+          />
+          <!-- <div class="caption">100%</div> -->
+        </div>
+        <div class="axis z">
+          <div class="label">h</div>
+          <input
+            class="picker-slider"
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+          />
+          <!-- <div class="caption">100%</div> -->
+        </div>
+        <!-- <div class="tools"> -->
+        <!-- <button class="random">random</button> -->
+        <!-- </div> -->
+      </div>
+      <!-- <div class="axis-container">
+        <div class="axis x">
+          <label>x</label>
+          <select class="axis-space"></select>
+          <select class="axis-dimension"></select>
+        </div>
+        <div class="axis y">
+          <label>y</label>
+          <select class="axis-space"></select>
+          <select class="axis-dimension"></select>
+        </div>
+      </div> -->
+    </main>
+    <!-- <section class="popup">
+      <input type="text" value="rgb(50.52% 20.52% 100%)" />
+      <button class="go">OK</button>
+    </section> -->
+    <script type="module" src="./picker.js"></script>
+  </body>
+</html>
