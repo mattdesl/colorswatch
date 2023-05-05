@@ -26,3 +26,7 @@ Check the `duo` box to enable a second color, for interaction testing. Click on 
 ## credits
 
 Thanks to [Colorjs.io](https://colorjs.io/) for color functions.
+
+## related
+
+Also see [colorgrab](https://mattdesl.github.io/colorgrab/).
