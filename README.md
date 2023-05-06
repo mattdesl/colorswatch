@@ -1,4 +1,4 @@
-# colorswatch
+# color swatch
 
 A small open source tool to pick colors from an image. Features:
 
