@@ -73,8 +73,12 @@ const spaceTool = setupSelects();
 document.addEventListener("paste", (e) => {
   e.preventDefault();
   if (!activeColorCell) return;
-  const text = (e.originalEvent || e).clipboardData.getData("text/plain");
+  let text = (e.originalEvent || e).clipboardData.getData("text/plain");
   try {
+    if (/^[A-F0-9]{6}$/i.test(text)) {
+      // special case, paste without hash
+      text = "#" + text;
+    }
     const color = new Color(text);
     const matchIdx = spaces.findIndex((s) => color.spaceId === s.id);
     if (matchIdx >= 0) {
