@@ -9,6 +9,7 @@ let activeColorCell;
 
 const spaceColorStr = document.querySelector(".space-value");
 const spaceSelect = document.querySelector(".space-select");
+const outOfGamut = document.querySelector(".out-of-gamut");
 
 const spaces = [
   {
@@ -17,6 +18,22 @@ const spaces = [
       { id: "l", name: "lightness", min: 0, max: 1 },
       { id: "c", name: "chroma", min: 0, max: 0.37 },
       { id: "h", name: "hue", min: 0, max: 360 },
+    ],
+  },
+  {
+    id: "okhsl",
+    dimensions: [
+      { id: "h", name: "hue", min: 0, max: 1 },
+      { id: "s", name: "saturation", min: 0, max: 1 },
+      { id: "l", name: "lightness", min: 0, max: 1 },
+    ],
+  },
+  {
+    id: "okhsv",
+    dimensions: [
+      { id: "h", name: "hue", min: 0, max: 1 },
+      { id: "s", name: "saturation", min: 0, max: 1 },
+      { id: "v", name: "value", min: 0, max: 1 },
     ],
   },
   {
@@ -43,15 +60,15 @@ const spaces = [
       { id: "b", name: "blue", min: 0, max: 1 },
     ],
   },
-  {
-    format: "hex",
-    id: "srgb",
-    dimensions: [
-      { id: "r", name: "red", min: 0, max: 1 },
-      { id: "g", name: "green", min: 0, max: 1 },
-      { id: "b", name: "blue", min: 0, max: 1 },
-    ],
-  },
+  // {
+  //   format: "hex",
+  //   id: "srgb",
+  //   dimensions: [
+  //     { id: "r", name: "red", min: 0, max: 1 },
+  //     { id: "g", name: "green", min: 0, max: 1 },
+  //     { id: "b", name: "blue", min: 0, max: 1 },
+  //   ],
+  // },
 ];
 window.addEventListener("pointerup", up, { passive: false });
 
@@ -69,6 +86,7 @@ document.addEventListener("copy", async (e) => {
 });
 
 const spaceTool = setupSelects();
+let useHex = false;
 
 document.addEventListener("paste", (e) => {
   e.preventDefault();
@@ -118,6 +136,7 @@ if (check) {
   check.addEventListener(
     "input",
     (ev) => {
+      ev.preventDefault();
       cells[0].element.style.display = check.checked ? "" : "none";
       if (!check.checked) {
         const old = activeColorCell;
@@ -128,6 +147,17 @@ if (check) {
     { passive: false }
   );
 }
+
+const hex = document.querySelector("#hex-checkbox");
+hex.addEventListener(
+  "input",
+  (ev) => {
+    ev.preventDefault();
+    useHex = Boolean(ev.currentTarget.checked);
+    updateColorText(spaceTool.space);
+  },
+  { passive: false }
+);
 
 window.addEventListener("keypress", (ev) => {
   if (activeColorCell && !ev.metaKey && !ev.ctrlKey) {
@@ -220,7 +250,6 @@ function setupSelects() {
     const space = spaces[_spaceIndex];
 
     if (!color) color = new Color("#000000");
-    // const colorInSpace = color.to(space.id);
     xyz.forEach((el, i) => {
       const d = space.dimensions[i];
       el.value = color[space.id][d.id];
@@ -300,11 +329,21 @@ function updateColorText(curSpace) {
   if (activeColorCell) {
     const id = curSpace ? curSpace.format || curSpace.id : "srgb";
     str = serialize(activeColorCell.color, id);
+    const isHex = id == "hex" || useHex;
+    const inGamut = activeColorCell.color.inGamut("srgb");
+    outOfGamut.style.visibility = !inGamut ? "visible" : "hidden";
+    spaceColorStr.classList.remove("note");
+    if (!inGamut && !isHex) spaceColorStr.classList.add("note");
   }
   spaceColorStr.textContent = str;
 }
 
 function serialize(c, m) {
-  if (m == "hex") return c.to("srgb").toString({ format: "hex" });
-  else return c.to(m).toString({ precision: 4 });
+  if (m == "hex" || useHex) {
+    const srgb = c.to("srgb");
+    srgb.toGamut();
+    return srgb.toString({ format: "hex" });
+  } else {
+    return c.to(m).toString({ precision: 4 });
+  }
 }

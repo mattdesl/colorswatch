@@ -113,11 +113,12 @@
       .space input {
         vertical-align: middle;
       }
-      #duo-checkbox {
-        margin: 0px;
-      }
       input[type="checkbox"] {
         margin: 0px;
+        user-select: none;
+      }
+      .check label {
+        user-select: none;
       }
       .space label {
         display: block;
@@ -222,6 +223,23 @@
         top: 10px;
         right: 10px;
       }
+
+      .space-value {
+        position: relative;
+      }
+      .space-value.note::after {
+        content: "*";
+        position: absolute;
+        right: -10px;
+        top: -5px;
+        color: crimson;
+      }
+      .out-of-gamut {
+        text-align: right;
+        font-size: 10px;
+        margin-top: 10px;
+        color: crimson;
+      }
     </style>
   </head>
   <body>
@@ -243,6 +261,9 @@
           <select class="space-select"></select>
           <div class="check">
             <label><input type="checkbox" id="duo-checkbox" /> duo</label>
+          </div>
+          <div class="check">
+            <label><input type="checkbox" id="hex-checkbox" /> hex</label>
           </div>
         </div>
         <div class="space-value"></div>
@@ -286,23 +307,11 @@
         <!-- <button class="random">random</button> -->
         <!-- </div> -->
       </div>
-      <!-- <div class="axis-container">
-        <div class="axis x">
-          <label>x</label>
-          <select class="axis-space"></select>
-          <select class="axis-dimension"></select>
-        </div>
-        <div class="axis y">
-          <label>y</label>
-          <select class="axis-space"></select>
-          <select class="axis-dimension"></select>
-        </div>
-      </div> -->
+
+      <div class="out-of-gamut" style="visibility: hidden">
+        * color outside of sRGB gamut
+      </div>
     </main>
-    <!-- <section class="popup">
-      <input type="text" value="rgb(50.52% 20.52% 100%)" />
-      <button class="go">OK</button>
-    </section> -->
     <script type="module" src="./picker.js"></script>
   </body>
 </html>
